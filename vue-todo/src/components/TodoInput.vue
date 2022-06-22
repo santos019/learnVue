@@ -2,31 +2,43 @@
   <div class="inputBox shadow">
     <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo" class="inputDiv">
     <span class="addContainer">
-      <i class="fas fa-plus addBtn"></i>
+      <i class="fas fa-plus addBtn "></i>
     </span>
+      <AlertModal  v-if="showModal" @close="showModal = false">
+       <h3 slot="header">경고!</h3>
+       <div slot="body">아무것도 입력하지 않으셨습니다.</div>
+       <div slot="footer">
+        <i class="closeModalBtn fa-thin fa-x" v-on:click="showModal = false"></i>
+        </div>
+      </AlertModal >
   </div>
 </template>
     <script src="https://kit.fontawesome.com/614602752e.js" crossorigin="anonymous"></script>
 <script>
-
+import AlertModal from './common/AlertModal .vue'
 export default {
-  data: function() {
+  data () {
     return {
-      newTodoItem:""
+      newTodoItem:"",
+      showModal:false
     }
   },
   methods: {
-    addTodo: function() {
+    addTodo () {
       if(this.newTodoItem !== '') {
-      const obj ={completed: false, item: this.newTodoItem}
-      localStorage.setItem(this.newTodoItem, JSON.stringify(obj))
-      this.clearInput();
-          }
-
-},
-    clearInput: function () {
+        this.$emit('addTodoItem', this.newTodoItem)
+        this.clearInput();
+      } else {
+        this.showModal = !this.showModal
+      }
+    },
+    clearInput () {
       this.newTodoItem ='';
     }
+  },
+  components: {
+    AlertModal 
+
   }
 }
 </script>
@@ -58,5 +70,9 @@ input:focus {
 .addBtn {
   color: wheat;
   vertical-align: middle;
+}
+.closeModalBtn {
+  color: #42b983;
+
 }
 </style>
