@@ -43,18 +43,18 @@ export default {
     // ...mapState({ //state를 바로 쓰고 싶으면
     //   ask: state => state.ask
     // })
-  created() {
-    this.$store.dispatch('FETCH_ASK')
-    // const that = this;
-    // fetchAskList()
-    // .then(function(res){
-    //   console.log(res);
-    //   that.ask = res.data;
-    // })
-    // .catch(function(err) {
-    //   console.log(err)
-    // })
+  // created() {
+  //   this.$store.dispatch('FETCH_ASK')
+  //   // const that = this;
+  //   // fetchAskList()
+  //   // .then(function(res){
+  //   //   console.log(res);
+  //   //   that.ask = res.data;
+  //   // })
+  //   // .catch(function(err) {
+  //   //   console.log(err)
+  //   // })
 
-  }
+  // }
 }
 </script>

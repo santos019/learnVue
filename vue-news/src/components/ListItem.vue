@@ -3,17 +3,27 @@
         <ul class="news-list">
         <li v-for="user in ListItems" v-bind:key="user.id" class="post">
             <div class="points">
-            {{ user.points }}
+            {{ user.points || 0}}
             </div>
             <div>
             <p class="news-title">
+              <template v-if="user.domain">
                 <a v-bind:href="user.url">
-                {{ user.title }}
+                  {{ user.title }}
                 </a>
+              </template>
+              <template v-else>
+                <router-link v-bind:to="`item/${user.id}`">
+                  {{ user.title }}
+                </router-link>
+              </template>
             </p>
             <small class="link-text">
                 by
-                <router-link v-bind:to="'/user/' + user.user">{{user.user}}</router-link>
+                <router-link v-if="user.user" v-bind:to="'/user/' + user.user">{{user.user}}</router-link>
+                <a :href="user.domain" v-else>
+                  {{ user.domain}}
+                </a>
             </small>
             </div>
         </li>
