@@ -1,14 +1,14 @@
 <template>
   <div class="home-container">
-      <div class="home-weather-container">
-        <div class="home-weather-text" @click="clickAdd" :class="{'home-weather-text-click': add === true}" style="homeWeatherTextStyle"><i class="fa-solid fa-star"></i> 우리집
+      <div class="home-weather-container" v-for="(datas, index) in userData" :key="index">
+        <div class="home-weather-text" @click="clickAdd" :class="{'home-weather-text-click': add === true}" style="homeWeatherTextStyle"><i class="fa-solid fa-star"></i> {{datas.title}}
         </div>
-        <div class="home-add-text" @click="clickAdd" :class="{'home-add-text-click': add === true}"><i class="fa-solid fa-plus"></i> 추가하기
+        <div v-if="index === 0" class="home-add-text" @click="clickAdd" :class="{'home-add-text-click': add === true}"><i class="fa-solid fa-plus"></i> 추가하기
         </div>
-        <div v-show="!add">
+        <div v-show="!add || index!==0">
             <ContentsSlider></ContentsSlider>
         </div>
-        <div v-show="add">
+        <div v-if="index === 0" v-show="add">
             <AddBookmark></AddBookmark>
         </div>
       </div>
@@ -29,8 +29,13 @@ export default {
             add:false,
             homeWeatherTextStyle:{
             background: 'darkcyan'
-            }
+            },
+            userData:{}
+
         }
+    },
+    created() {
+         this.userData = JSON.parse(localStorage.getItem('userData')) || [];
     },
     components: {
         ContentsSlider,
