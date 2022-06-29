@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { fetchWeather } from '../api/index.js'
 // import mutations from './mutations.js'
 //import actions from './actions.js'
 Vue.use(Vuex)
@@ -8,6 +9,9 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         userData: [],
+        realLocation:{},
+        currentLocation:[],
+        bookmarkLocation:[]
     },
     getters: {
         fetchedUserdata(state) {
@@ -24,6 +28,9 @@ export const store = new Vuex.Store({
         SET_USERDATA (state, userdata) {
             state.userData = userdata;    
             localStorage.setItem('userData', JSON.stringify(state.userData));
+        },
+        SET_CURRNETLOCATION (state, data) {
+            state.currentLocation = data;
         }
     },
     actions:{
@@ -33,8 +40,17 @@ export const store = new Vuex.Store({
         },
         FETCH_USERDATA_INIT ({commit}) {
             const data = JSON.parse(localStorage.getItem('userData')) || [] ;
-            console.log(data)
             commit('SET_USERDATA_INIT', data);
+        },
+        FETCH_CURRENTLOCATION ({commit}, data) {
+            fetchWeather(data)
+            .then(res => {console.log(res.data.response.body.items.item)
+                commit('SET_CURRNETLOCATION', res.data.response.body.items.item)
+            })
+            .catch(err => console.log(err))
+        },
+        FETCH_REALLOCATION () {
+            
         }
     }
 })

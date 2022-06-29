@@ -1,5 +1,5 @@
 <template>
-  <div class="home-container"> {{fetchedUserdata.length}}
+  <div class="home-container"> {{geofind()}}
         <div class="home-weather-container" v-if="fetchedUserdata.length === 0">
             <div class="home-add-text" @click="clickAdd" :class="'home-add-text-click-init'">
                 <i class="fa-solid fa-plus"></i> 추가하기
@@ -40,12 +40,16 @@
 import ContentsSlider from '../components/ContentsSlider.vue'
 import AddBookmark from '../components/AddBookmark.vue'
 import { mapGetters, mapState } from 'vuex'
+//import axios from 'axios'
 export default {
     data(){
         return {
             add:false,
             homeWeatherTextStyle:{
-            background: 'darkcyan'
+            background: 'darkcyan',
+            latitude:'',
+            longitude: '',
+            textContent: '' 
             },
          
 
@@ -53,6 +57,28 @@ export default {
     },
     created() {
         this.$store.dispatch('FETCH_USERDATA_INIT')
+        const testData = {numOfRows: 10, pageNo: 1, stnIds: 108, endDt: 20100601, endHh: '01', startHh: '01', startDt: 20100101}
+        this.$store.dispatch('FETCH_CURRENTLOCATION', testData);
+        //fetchWeather(testData).then(res => console.log(res.data.response.body.items.item))
+        // axios.get('/1360000/AsosHourlyInfoService/getWthrDataList?serviceKey=xAL3HhXPLapIk8kqPCr3Q%2Fn9aPxhQUlwYeTF8reIwRpT4ZthkBepQ73lhebDef3mZ6LfBcHYGy9tC2Zn6bcWFg%3D%3D&dataType=JSON&numOfRows=10&pageNo=1&dataCd=ASOS&dateCd=HR&stnIds=108&endDt=20200310&endHh=01&startHh=01&startDt=20190120'
+        //  {
+        //     params: {
+        //         serviceKey: 'xAL3HhXPLapIk8kqPCr3Q%2Fn9aPxhQUlwYeTF8reIwRpT4ZthkBepQ73lhebDef3mZ6LfBcHYGy9tC2Zn6bcWFg%3D%3D',
+        //         numOfRows: '10',
+        //         pageNo: '1',
+        //         dataType: 'XML',
+        //         dataCd: 'ASOS',
+        //         dateCd: 'HR',
+        //         stnIds: '108',
+        //         endDt: '20220310',
+        //         endHh:'01',
+        //         startHh:'01',
+        //         startDt:'20220120',
+        //     }
+        // }
+        //).
+        //then(res => console.log(res.data.response.body.items.item));
+       
     },
     components: {
         ContentsSlider,
@@ -71,7 +97,25 @@ export default {
             
             console.log(this.userData)
             this.$store.dispatch('FETCH_USERDATA', this.userData);
+        },
+        geofind() {
+            if(!("geolocation" in navigator)) {
+            this.textContent = 'Geolocation is not available.';
+            return;
+            }
+            this.textContent = 'Locating...'
+            
+            // get position
+            navigator.geolocation.getCurrentPosition(pos => {
+            this.latitude = pos.coords.latitude;
+            this.longitude = pos.coords.longitude;
+            this.textContent = 'Your location data is ' + this.latitude + ', ' + this.longitude
+            console.log(this.textContent)
+            }, err => {
+            this.textContent = err.message;
+            })
         }
+        
     },
     computed: {
         ...mapGetters(['fetchedUserdata']),
@@ -91,6 +135,7 @@ export default {
     width: 90%;
     margin: auto;
     margin-top: 40px;
+    margin-bottom: 50px;
     background: gray;
 }
 .home-weather-text{
