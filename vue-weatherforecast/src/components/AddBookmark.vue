@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     created () {
         this.selectedRegion = '0'
@@ -186,6 +187,9 @@ export default {
             }
         }
     },
+      computed: {
+        ...mapGetters(['fetchedUserdata'])
+    },
     methods:{
         positioning(e) {
             const datas = {
@@ -281,7 +285,8 @@ export default {
                 return;
             }
             let cnt = false;
-            let getArr = JSON.parse(localStorage.getItem('userData')) || [];
+            let getArr = this.fetchedUserdata;
+            console.log(getArr)
             for(const element of getArr) {
                 if (element.title === this.title) {
                     alert('동일 호칭이 있습니다. 다시 입력해주세요.');
@@ -291,7 +296,7 @@ export default {
             }
             if (cnt === true) return;
             getArr.push({title: this.title, value: this.selectedDetailRegion});
-            localStorage.setItem('userData', JSON.stringify(getArr))
+            this.$store.dispatch('FETCH_USERDATA', getArr)
             this.title = '';
         }
         
