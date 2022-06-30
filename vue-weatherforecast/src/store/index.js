@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { fetchWeather } from '../api/index.js'
+import { fetchWeather, fetchRealLocation } from '../api/index.js'
 // import mutations from './mutations.js'
 //import actions from './actions.js'
 Vue.use(Vuex)
@@ -9,9 +9,9 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         userData: [],
-        realLocation:{},
-        currentLocation:[],
-        bookmarkLocation:[]
+        currentLocation:'',
+        currentLocationWeather:{},
+        bookmarkLocation:[],
     },
     getters: {
         fetchedUserdata(state) {
@@ -29,8 +29,14 @@ export const store = new Vuex.Store({
             state.userData = userdata;    
             localStorage.setItem('userData', JSON.stringify(state.userData));
         },
+        SET_CURRNETLOCATIONWEATHER (state, data) {
+            state.currentLocationWeather = data;
+            console.log(state.currentLocationWeather);
+        },
         SET_CURRNETLOCATION (state, data) {
+            console.log(data)
             state.currentLocation = data;
+            console.log(state.currentLocation);
         }
     },
     actions:{
@@ -42,15 +48,19 @@ export const store = new Vuex.Store({
             const data = JSON.parse(localStorage.getItem('userData')) || [] ;
             commit('SET_USERDATA_INIT', data);
         },
-        FETCH_CURRENTLOCATION ({commit}, data) {
+        FETCH_CURRNETLOCATIONWEATHER ({commit}, data) {
             fetchWeather(data)
             .then(res => {console.log(res.data.response.body.items.item)
-                commit('SET_CURRNETLOCATION', res.data.response.body.items.item)
+                commit('SET_CURRNETLOCATIONWEATHER', res.data.response.body.items.item)
             })
             .catch(err => console.log(err))
+            console.log(this.currentLocation);
         },
-        FETCH_REALLOCATION () {
+        FETCH_REALLOCATION: async ({commit}) => {
+            const location  = await fetchRealLocation();
+            commit('SET_CURRNETLOCATION', location.substr(location.indexOf('대한민국')+5,));
             
         }
+
     }
 })

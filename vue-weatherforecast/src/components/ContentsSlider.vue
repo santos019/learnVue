@@ -4,17 +4,17 @@
         <i class="fa-solid fa-angle-left"></i>
       </div>
       <div class="contents-whole-container">
-      <div class="contents-weather-container">
-          <div class="contents-temperature-container">
-              25도
-          </div>
-          <div class="contents-image-container">
-              해
-          </div>
-          <div class="contents-data-container">
-              25 / 30
-          </div>
-      </div>
+        <div class="contents-weather-container">
+            <div class="contents-temperature-container">
+                25도
+            </div>
+            <div class="contents-image-container">
+                해
+            </div>
+            <div class="contents-data-container">
+                25 / 30
+            </div>
+        </div>
       </div>
        <div class="contents-aft">
             <i class="fa-solid fa-angle-right"></i>
