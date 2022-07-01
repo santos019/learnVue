@@ -12,6 +12,8 @@ export const store = new Vuex.Store({
         currentLocation:'',
         currentLocationWeather:{},
         bookmarkLocation:[],
+        coordinate:{},
+        userDate:{},
     },
     getters: {
         fetchedUserdata(state) {
@@ -33,10 +35,15 @@ export const store = new Vuex.Store({
             state.currentLocationWeather = data;
             console.log(state.currentLocationWeather);
         },
-        SET_CURRNETLOCATION (state, data) {
+        SET_REALLOCATIONNAME (state, data) {
             console.log(data)
             state.currentLocation = data;
             console.log(state.currentLocation);
+        },
+        SET_REALLOCATIONCOORDINATE (state, data) {
+            
+            state.coordinate = data
+            console.log(state.coordinate)
         }
     },
     actions:{
@@ -56,10 +63,15 @@ export const store = new Vuex.Store({
             .catch(err => console.log(err))
             console.log(this.currentLocation);
         },
-        FETCH_REALLOCATION: async ({commit}) => {
+        FETCH_REALLOCATION: async ({ commit }) => {
             const location  = await fetchRealLocation();
-            commit('SET_CURRNETLOCATION', location.substr(location.indexOf('대한민국')+5,));
-            
+            const coordinate = { latitude: location.latitude, longitude: location.longitude}
+            console.log(location);
+            commit('SET_REALLOCATIONNAME', location.code.substr(location.code.indexOf('대한민국')+5,));
+            commit('SET_REALLOCATIONCOORDINATE', coordinate)
+        },
+        FETCH_TODAY () {
+
         }
 
     }

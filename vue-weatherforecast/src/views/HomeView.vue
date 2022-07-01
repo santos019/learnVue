@@ -40,6 +40,7 @@
 import ContentsSlider from '../components/ContentsSlider.vue'
 import AddBookmark from '../components/AddBookmark.vue'
 import { mapGetters, mapState } from 'vuex'
+import { dateFormatFuc } from '../lib/index' 
 //import axios from 'axios'
 export default {
     data(){
@@ -57,14 +58,16 @@ export default {
     },
     created() {
         this.$store.dispatch('FETCH_USERDATA_INIT')
-        const testData = {numOfRows: 10, pageNo: 1, stnIds: 152, endDt: 20100601, endHh: '01', startHh: '01', startDt: 20100101}
         this.$store.dispatch('FETCH_REALLOCATION');
-        console.log(this.$store.state.currentLocation);
-        if (this.$store.state.currentLocation === '서울특별시') {
-            console.log('true');
-            testData.stnIds = 108
-        }
-        this.$store.dispatch('FETCH_CURRNETLOCATIONWEATHER', testData);
+        
+        console.log(dateFormatFuc())
+        // const testData = {baseDate: '20220630', baseTime: '0500', nx:'127', ny:'37'}
+        // console.log(this.$store.state.currentLocation);
+        // if (this.$store.state.currentLocation === '서울특별시') {
+        //     console.log('true');
+        //     testData.stnIds = 108
+        // }
+        // this.$store.dispatch('FETCH_CURRNETLOCATIONWEATHER', testData);
        
     },
     components: {
