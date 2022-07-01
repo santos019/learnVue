@@ -27,7 +27,8 @@
 
 <script>
 import ListItem from '@/components/ListItem.vue'
-// import { fetchJobsList } from '../api/index.js'
+import bus from '../utils/bus'
+
 export default {
   components: { ListItem },
 //   data() {
@@ -35,19 +36,29 @@ export default {
 //       jobs:[]
 //     }
 //   },
-// created() {
-//     this.$store.dispatch('FETCH_JOBS')
-//     // const that = this;
-//     // fetchJobsList()
-//     // .then(function(res){
-//     //   console.log(res);
-//     //   that.jobs = res.data;
-//     // })
-//     // .catch(function(err) {
-//     //   console.log(err)
-//     // })
+created() {
+    bus.$emit('start:spinner');
+    setTimeout(() => {
+      this.$store.dispatch('FETCH_JOBS')
+      .then(() => {
+        console.log('fetched');
+        bus.$emit('end:spinner');
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }, 3000);
+    // const that = this;
+    // fetchJobsList()
+    // .then(function(res){
+    //   console.log(res);
+    //   that.jobs = res.data;
+    // })
+    // .catch(function(err) {
+    //   console.log(err)
+    // })
 
-//   }
+  }
 }
 </script>
 
