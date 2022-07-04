@@ -27,38 +27,30 @@
 
 <script>
 import ListItem from '@/components/ListItem.vue'
-import bus from '../utils/bus'
-
+// import bus from '../utils/bus'
+import ListMixin from '../mixins/ListMixin.js'
 export default {
   components: { ListItem },
+    
 //   data() {
 //     return {
 //       jobs:[]
 //     }
 //   },
-created() {
-    bus.$emit('start:spinner');
-    setTimeout(() => {
-      this.$store.dispatch('FETCH_JOBS')
-      .then(() => {
-        console.log('fetched');
-        bus.$emit('end:spinner');
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }, 3000);
-    // const that = this;
-    // fetchJobsList()
-    // .then(function(res){
-    //   console.log(res);
-    //   that.jobs = res.data;
-    // })
-    // .catch(function(err) {
-    //   console.log(err)
-    // })
-
-  }
+// created() {
+//     bus.$emit('start:spinner');
+//     setTimeout(() => {
+//       this.$store.dispatch('FETCH_JOBS')
+//       .then(() => {
+//         console.log('fetched');
+//         bus.$emit('end:spinner');
+//       })
+//       .catch((err) => {
+//         console.log(err)
+//       })
+//     }, 3000);
+//   }
+  mixins: [ListMixin]
 }
 </script>
 

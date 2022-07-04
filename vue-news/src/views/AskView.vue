@@ -28,11 +28,13 @@
 <script>
 // import { fetchAskList } from '../api/index.js'
 import ListItem from '../components/ListItem.vue'
-import bus from  '../utils/bus'
+/// import bus from  '../utils/bus'
+import ListMixin from '../mixins/ListMixin.js'
 export default {
   components: {
     ListItem
   },
+
   // computed:{
   //   ...mapGetters([
   //     'fetchedAsk'
@@ -44,29 +46,20 @@ export default {
     // ...mapState({ //state를 바로 쓰고 싶으면
     //   ask: state => state.ask
     // })
-  created() {
+  // created() {
     
-    bus.$emit('start:spinner');
-    setTimeout(() => {
-      this.$store.dispatch('FETCH_ASK')
-      .then(() => {
-        console.log('fetched');
-        bus.$emit('end:spinner');
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }, 3000);
-    // const that = this;
-    // fetchAskList()
-    // .then(function(res){
-    //   console.log(res);
-    //   that.ask = res.data;
-    // })
-    // .catch(function(err) {
-    //   console.log(err)
-    // })
-
-  }
+  //   bus.$emit('start:spinner');
+  //   setTimeout(() => {
+  //     this.$store.dispatch('FETCH_ASK')
+  //     .then(() => {
+  //       console.log('fetched');
+  //       bus.$emit('end:spinner');
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  //   }, 3000);
+  // }
+    mixins: [ListMixin]
 }
 </script>
