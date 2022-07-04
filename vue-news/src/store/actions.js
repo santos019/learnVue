@@ -1,36 +1,24 @@
 import { fetchNewsList, fetchJobsList, fetchAskList, fetchUserInfo, fetchItemInfo,fetchList  } from '../api/index.js'
 
 export default {
-    FETCH_NEWS(context) {
-        return fetchNewsList()
-        .then(res => {
-            context.commit('SET_NEWS', res.data);
-            console.log(res);
-            return res;
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    async FETCH_NEWS(context) {
+        const response = await fetchNewsList();
+        context.commit('SET_NEWS', response.data);
+        return response;
     },
-    FETCH_JOBS({commit}) {
-        return fetchJobsList()
-        .then(({data}) => {
-            commit('SET_JOBS', data);
-            console.log(data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    async FETCH_JOBS({commit}) {
+        try {
+                const response = await fetchJobsList();
+                commit('SET_JOBS',response.data);
+                return response;    
+        } catch (error) {
+            console.log(error);
+        }
     },
-    FETCH_ASK(context) {
-        return fetchAskList()
-        .then(res => {
-            context.commit('SET_ASK', res.data);
-            console.log(res);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    async FETCH_ASK(context) {
+        const response =  await fetchAskList();
+        context.commit('SET_ASK', response.data)
+        return response;        
     },
     FETCH_USER({ commit }, name) {
         return fetchUserInfo(name)
@@ -50,9 +38,10 @@ export default {
             console.log(err)
         })
     },
-    FETCH_LIST ({commit}, pageName) {
-        return fetchList(pageName)
-        .then(({data}) => commit('SET_LIST',data))
-        .catch(err => console.log(err))
+    async FETCH_LIST ({commit}, pageName) {
+        const response = await fetchList(pageName)
+        commit('SET_LIST', response.data)
+        return response;
+        
     }
 }
