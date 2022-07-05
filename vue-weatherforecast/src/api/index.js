@@ -1,13 +1,13 @@
 import axios from "axios";
 import { mapKey, publicDataKey } from '../../keys'
 const config = {
-    baseUrl: 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=' + publicDataKey,
+    baseUrl: '/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=' + publicDataKey,
     mapUrl: 'https://maps.googleapis.com/maps/api/geocode/json?latlng='
 }
 
 function fetchWeather({baseDate, baseTime, nx, ny}) {
-    return axios.get(config.baseUrl +'&numOfRows=1000&pageNo=1'+ '&base_date=' + baseDate + '&base_time=' + baseTime +'&nx='+nx+'&ny=' + ny +'&dataType=JSON');
-
+    axios.get(config.baseUrl +'&numOfRows=1000&pageNo=1&base_date=' + baseDate + '&base_time=' + baseTime +'&nx='+nx+'&ny=' + ny +'&dataType=JSON')
+    .then(res => console.log(res))
 }
 
 function fetchRealLocation () {
