@@ -1,6 +1,6 @@
 <template>
   <div class="home-container">
-        <div class="home-weather-container" v-if="fetchedUserdata.length === 0">
+        <div class="home-weather-container" v-if="userData.length === 0">
             <div class="home-add-text" @click="clickAdd" :class="'home-add-text-click-init'">
                 <i class="fa-solid fa-plus"></i> 추가하기
             </div>
@@ -8,7 +8,7 @@
                 <AddBookmark></AddBookmark>
             </div>
       </div>
-      <div class="home-weather-container" v-else v-for="(datas, index) in fetchedUserdata" :key="index">
+      <div class="home-weather-container" v-else v-for="(datas, index) in userData" :key="index">
         <div class="hone-weather-menu-container">
             <div class="home-weather-text" @click="clickAdd" :class="{'home-weather-text-click': (add && index === 0) === true}" style="homeWeatherTextStyle">
                 <i class="fa-solid fa-star"></i> {{datas.title}}
@@ -29,9 +29,9 @@
       </div>
       <div class="home-weather-container">
         <div class="home-weather-text">
-            <i class="fa-solid fa-location-dot"></i> 현재 지역 [{{currentLocation}}]
+            <i class="fa-solid fa-location-dot"></i> 현재 지역 [{{currentcoordinate.locationName}}]
         </div>
-        <ContentsSlider></ContentsSlider>
+        <ContentsSlider :props="currentWeather"></ContentsSlider>
       </div>
   </div>
 </template>
@@ -39,61 +39,69 @@
 <script>
 import ContentsSlider from '../components/ContentsSlider.vue'
 import AddBookmark from '../components/AddBookmark.vue'
-import { mapGetters, mapState } from 'vuex'
-import { dateFormatFuc } from '../lib/index'
-import { fetchWeather } from '../api/index'
-//import axios from 'axios'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { dateFormatFuc  } from '../lib/index'
+import axios from 'axios'
 export default {
-    data(){
+    data (){
         return {
             add:false,
             homeWeatherTextStyle:{
-            background: 'darkcyan',
-            latitude:'',
-            longitude: '',
-            textContent: '' 
-            },
-         
-
+                background: 'darkcyan',
+                latitude:'',
+                longitude: '',
+                textContent: '' 
+            }
         }
     },
-    created() {
-        this.$store.dispatch('FETCH_USERDATA_INIT')
-        this.$store.dispatch('FETCH_REALLOCATION');
-        console.log(dateFormatFuc())
-        const {date, time } = dateFormatFuc();
-        console.log(date)
-        console.log(time)
-        console.log(this.$store.state.coordinate.latitude)
-        const testdata = {baseDate:date, baseTime:time, nx:'55', ny:'127'}
-        fetchWeather(testdata)
-        
-        
-       
+    created () {
+        this.SET_USERDATA_INIT()
+        this.FETCH_REALLOCATION().then(() => {
+            const { date, time } = dateFormatFuc();
+            
+            const testdata = {
+                baseDate: date,
+                baseTime: time,
+                nx: this.$store.state.currentcoordinate.x,
+                ny: this.$store.state.currentcoordinate.y
+            }
+            this.FETCH_CURRNETLOCATIONWEATHER(testdata)
+        })
+        axios.get('http://localhost:3001/weather/current', {
+            params: {
+                test:'test'
+            }
+        }).then(res => console.log(res))
+
     },
     components: {
         ContentsSlider,
         AddBookmark,
     },
     methods: {
+        ...mapMutations([
+            'SET_USERDATA_INIT',
+            'REMOVE_USERDATA'
+        ]),
+        ...mapActions([
+            'FETCH_USERDATA_INIT',
+            'FETCH_REALLOCATION',
+            'FETCH_CURRNETLOCATIONWEATHER'
+        ]),
         clickAdd () {
             this.add = !this.add
             console.log(this.add)
         },
         clickRemove (data) {
-            console.log(data)
-            console.log(this.$store.state.userData);
-            const index = this.userData.findIndex(el=> el.title === data.title);
-            this.userData.splice(index, 1);
-            
-            console.log(this.userData)
-            this.$store.dispatch('FETCH_USERDATA', this.userData);
+            const user = this.userData.find(el=> el.title === data.title);
+            //this.userData.splice(index, 1);
+            this.REMOVE_USERDATA(user);
         },
         
     },
     computed: {
-        ...mapGetters(['fetchedUserdata']),
-        ...mapState(['userData','currentLocation'])
+        ...mapGetters(['userData','currentWeather']),
+        ...mapState(['userData','currentcoordinate'])
     }
 }
 </script>

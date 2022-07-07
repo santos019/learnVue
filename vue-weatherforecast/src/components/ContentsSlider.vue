@@ -6,7 +6,7 @@
       <div class="contents-whole-container">
         <div class="contents-weather-container">
             <div class="contents-temperature-container">
-                25도
+                {{props}}
             </div>
             <div class="contents-image-container">
                 해
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-
+    props:['props']
 }
 </script>
 

@@ -1,74 +1,88 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { fetchWeather, fetchRealLocation } from '../api/index.js'
+import { LongtideLatitudeToCoordinate } from '../lib/index'
 // import mutations from './mutations.js'
 //import actions from './actions.js'
+import {
+    SET_USERDATA_INIT,
+    SET_USERDATA,
+    SET_CURRNETLOCATIONWEATHER,
+    SET_REALLOCATIONCOORDINATE,
+    REMOVE_USERDATA
+} from './mutation-type'
 Vue.use(Vuex)
-
 
 export const store = new Vuex.Store({
     state: {
         userData: [],
-        currentLocation:'',
-        currentLocationWeather:{},
+        currentWeather:{},
         bookmarkLocation:[],
-        coordinate:{},
+        currentcoordinate:{},
         userDate:{},
     },
     getters: {
-        fetchedUserdata(state) {
+        userData(state) {
            // 동기적으로 데이터 값을 넣을 때 마다 set 호출 처음 데이터는 home 페이지 할 때 마다 호출
             return state.userData;
         },
-
+        currentWeather(state) {
+            return state.currentWeather
+        }
     },
     mutations:{
-        SET_USERDATA_INIT (state, userdata) {
-            state.userData = userdata;
+        [SET_USERDATA_INIT]: (state) => {
+            const userData = JSON.parse(localStorage.getItem('userData')) || [] ;
+            state.userData = userData;
             localStorage.setItem('userData', JSON.stringify(state.userData));
         },
-        SET_USERDATA (state, userdata) {
-            state.userData = userdata;    
+        [SET_USERDATA]: (state, user) => {
+            state.userData.push(user);
             localStorage.setItem('userData', JSON.stringify(state.userData));
         },
-        SET_CURRNETLOCATIONWEATHER (state, data) {
-            state.currentLocationWeather = data;
-            console.log(state.currentLocationWeather);
+        [SET_CURRNETLOCATIONWEATHER]: (state, data) => {
+            state.currentWeather = data;
+            console.log(state.currentWeather);
         },
-        SET_REALLOCATIONNAME (state, data) {
-            console.log(data)
-            state.currentLocation = data;
-            console.log(state.currentLocation);
+        [SET_REALLOCATIONCOORDINATE]: (state, data) => {
+            state.currentcoordinate = data
+            console.log(state.currentcoordinate)
         },
-        SET_REALLOCATIONCOORDINATE (state, data) {
-            
-            state.coordinate = data
-            console.log(state.coordinate)
+        [REMOVE_USERDATA]: (state, data) => {
+            state.userData = state.userData.filter(el => el.title !== data.title)
+            localStorage.setItem('userData', JSON.stringify(state.userData));
         }
     },
     actions:{
-        FETCH_USERDATA ({commit}, userdata) {
-            //const data = JSON.parse(localStorage.getItem('userData')) || [];
-            commit('SET_USERDATA', userdata);
-        },
-        FETCH_USERDATA_INIT ({commit}) {
-            const data = JSON.parse(localStorage.getItem('userData')) || [] ;
-            commit('SET_USERDATA_INIT', data);
-        },
-        FETCH_CURRNETLOCATIONWEATHER ({commit}, data) {
+        // fetchUserData ({ commit }) {
+        //     commit(FETCH_USERDATA_REQUEST)
+        //     try {
+        //         const { res } = axis.get('')
+        //         commit(FETCH_USERDATA_SUCCESS, res)
+        //         return res    
+        //     } catch (error) {
+        //         commit(FETCH_USERDATA_FAILED, error)
+        //     }
+        // }
+        FETCH_CURRNETLOCATIONWEATHER ({ commit }, data) {
             fetchWeather(data)
-            .then(res => {console.log(res.data.response.body.items.item)
-                commit('SET_CURRNETLOCATIONWEATHER', res.data.response.body.items.item)
+            .then(res => {console.log(res)
+                commit(SET_CURRNETLOCATIONWEATHER, res)
             })
             .catch(err => console.log(err))
             console.log(this.currentLocation);
         },
         FETCH_REALLOCATION: async ({ commit }) => {
-            const location  = await fetchRealLocation();
-            const coordinate = { latitude: location.latitude, longitude: location.longitude}
-            console.log(location);
-            commit('SET_REALLOCATIONNAME', location.code.substr(location.code.indexOf('대한민국')+5,));
-            commit('SET_REALLOCATIONCOORDINATE', coordinate)
+            try {
+                const location  = await fetchRealLocation();
+                const coordinate = LongtideLatitudeToCoordinate('toXY',location.latitude,location.longitude)
+                coordinate.locationName = location.code.substr(location.code.indexOf('대한민국')+5,)
+                commit(SET_REALLOCATIONCOORDINATE, coordinate)
+                return Promise.resolve()
+            } catch (error) {
+                console.log(error)
+            }
+
         },
         FETCH_TODAY () {
 

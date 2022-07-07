@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
     created () {
         this.selectedRegion = '0'
@@ -188,9 +188,10 @@ export default {
         }
     },
       computed: {
-        ...mapGetters(['fetchedUserdata'])
+        ...mapGetters(['userData'])
     },
     methods:{
+        ...mapMutations(['SET_USERDATA']),
         positioning(e) {
             const datas = {
                 0: {
@@ -285,7 +286,7 @@ export default {
                 return;
             }
             let cnt = false;
-            let getArr = this.fetchedUserdata;
+            let getArr = this.userData;
             console.log(getArr)
             for(const element of getArr) {
                 if (element.title === this.title) {
@@ -295,8 +296,8 @@ export default {
                 }
             }
             if (cnt === true) return;
-            getArr.push({title: this.title, value: this.selectedDetailRegion});
-            this.$store.dispatch('FETCH_USERDATA', getArr)
+            // getArr.push({title: this.title, value: this.selectedDetailRegion});
+            this.SET_USERDATA({title: this.title, value: this.selectedDetailRegion})
             this.title = '';
         }
         
