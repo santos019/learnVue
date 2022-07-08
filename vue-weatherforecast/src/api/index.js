@@ -6,10 +6,9 @@ const config = {
     mapUrl: 'https://maps.googleapis.com/maps/api/geocode/json?latlng='
 }
 
-function fetchWeather() {
-    return axios.get(config.baseUrl+'current',{test:'test'})
-    // axios.get(config.baseUrl +'&numOfRows=1000&pageNo=1&base_date=' + baseDate + '&base_time=' + baseTime +'&nx='+nx+'&ny=' + ny +'&dataType=JSON')
-    // .then(res => console.log(res))
+function fetchWeather({baseDate, baseTime, nx, ny }) {
+    return axios.get(config.baseUrl+'current',{
+        params: {baseDate:baseDate, baseTime:baseTime, nx:nx, ny:ny}})
 }
 
 function fetchRealLocation () {

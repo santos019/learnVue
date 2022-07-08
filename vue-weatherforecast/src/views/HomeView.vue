@@ -10,8 +10,10 @@
       </div>
       <div class="home-weather-container" v-else v-for="(datas, index) in userData" :key="index">
         <div class="hone-weather-menu-container">
-            <div class="home-weather-text" @click="clickAdd" :class="{'home-weather-text-click': (add && index === 0) === true}" style="homeWeatherTextStyle">
-                <i class="fa-solid fa-star"></i> {{datas.title}}
+            <div class="home-weather-header">
+                <div class="home-weather-text" @click="clickAdd" :class="{'home-weather-text-click': (add && index === 0) === true}" style="homeWeatherTextStyle">
+                    <i class="fa-solid fa-star"></i> {{datas.title}}
+                </div>
             </div>
             <div v-if="index === 0" class="home-add-text" @click="clickAdd" :class="{'home-add-text-click': add === true}">
                 <i class="fa-solid fa-plus"></i> 추가하기
@@ -28,8 +30,10 @@
         </div>
       </div>
       <div class="home-weather-container">
-        <div class="home-weather-text">
-            <i class="fa-solid fa-location-dot"></i> 현재 지역 [{{currentcoordinate.locationName}}]
+          <div class="home-weather-header">
+            <div class="home-weather-text">
+                <i class="fa-solid fa-location-dot"></i> 현재 지역 [{{currentcoordinate.locationName}}]
+            </div>
         </div>
         <ContentsSlider :props="currentWeather"></ContentsSlider>
       </div>
@@ -41,7 +45,7 @@ import ContentsSlider from '../components/ContentsSlider.vue'
 import AddBookmark from '../components/AddBookmark.vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { dateFormatFuc  } from '../lib/index'
-import axios from 'axios'
+//import axios from 'axios'
 export default {
     data (){
         return {
@@ -57,21 +61,33 @@ export default {
     created () {
         this.SET_USERDATA_INIT()
         this.FETCH_REALLOCATION().then(() => {
-            const { date, time } = dateFormatFuc();
+            //                              const { date, time } = dateFormatFuc();
             
-            const testdata = {
-                baseDate: date,
-                baseTime: time,
-                nx: this.$store.state.currentcoordinate.x,
+            // const testdata = {
+            //     baseDate: date,
+            //     baseTime: time,
+            //     nx: this.$store.state.currentcoordinate.x,
+            //     ny: this.$store.state.currentcoordinate.y
+            // }
+            //this.FETCH_CURRNETLOCATIONWEATHER(testdata)
+            const { date, time }  = dateFormatFuc();
+            const sendData = {
+                baseDate : date,
+                baseTime : time,
+                nx: this.$store.state.currentcoordinate.x, 
                 ny: this.$store.state.currentcoordinate.y
             }
-            this.FETCH_CURRNETLOCATIONWEATHER(testdata)
+            this.FETCH_CURRNETLOCATIONWEATHER(sendData)
+        //     axios.get('http://localhost:3001/weather/current', {
+        //     params: {
+        //         baseDate:date,
+        //         baseTime:time,
+        //         nx:55,
+        //         ny:127
+        //     }
+        // }).then(res => console.log(res))
         })
-        axios.get('http://localhost:3001/weather/current', {
-            params: {
-                test:'test'
-            }
-        }).then(res => console.log(res))
+       
 
     },
     components: {
@@ -119,6 +135,11 @@ export default {
     margin-top: 40px;
     margin-bottom: 50px;
     background: gray;
+}
+.home-weather-header{
+    width: 100%;
+    height: 50px;
+    background-color: antiquewhite;
 }
 .home-weather-text{
     float: left;

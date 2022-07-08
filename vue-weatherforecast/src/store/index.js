@@ -70,7 +70,7 @@ export const store = new Vuex.Store({
                 commit(SET_CURRNETLOCATIONWEATHER, res)
             })
             .catch(err => console.log(err))
-            console.log(this.currentLocation);
+            //console.log(this.currentLocation);
         },
         FETCH_REALLOCATION: async ({ commit }) => {
             try {
